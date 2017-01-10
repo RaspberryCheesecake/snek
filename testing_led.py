@@ -1,5 +1,6 @@
 from sense_hat import SenseHat
 from time import sleep
+from random import randint
 
 sense = SenseHat()
 
@@ -20,7 +21,7 @@ def restart():
     length = 4
     tail = [(0,0)]
     sense.set_pixel(x, y, 255, 0, 0)
-    sense.set_pixel(4, 4, 0, 255, 0) # pixel to eat
+    sense.set_pixel(randint(0, 7), randint(0, 7), 0, 255, 0) # pixel to eat
 
     
 
@@ -47,6 +48,7 @@ while True:
     elif event.direction == "left":
         x = (x+7) % 8
     elif event.direction == "down":
+
         y = (y+1) % 8
     elif event.direction == "up":
         y = (y+7) % 8
@@ -60,6 +62,7 @@ while True:
     eaten_pixel = sense.get_pixels()[index_eaten]
     if eaten_pixel[1] != 0:
         length +=1
+        sense.set_pixel(randint(0, 7), randint(0, 7), 0, 255, 0) # pixel to eat
     elif eaten_pixel[0] != 0:
         you_fail()
         restart()
