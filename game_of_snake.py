@@ -32,12 +32,19 @@ def fail_animation():
         sleep(0.1)
 
 
-def a_wild_pixel_appears():
-    x_wild = randint(0,7)
-    y_wild = randint(0,7)
+def a_wild_pixel_appears(board_state):
     # we need to exclude pixel locations that are already occupied, in a general way...
 
-    sense.set_pixel(x_wild, y_wild, 0, 255, 0)
+    if (0, 0, 0) in board_state:
+        # To prevent a bug: otherwise if the whole board is already set this will run forever
+        x_wild = randint(0, 7)
+        y_wild = randint(0, 7)
+        if board_state[x_wild + 7*y_wild] != (0, 0, 0):
+            a_wild_pixel_appears(board_state)
+        sense.set_pixel(x_wild, y_wild, 0, 255, 0)
+    else:
+        print( "Board is full!")
+
 
 sense.clear()
 restart()
@@ -65,17 +72,19 @@ while True:
         sense.set_pixel(end[0], end[1], 0, 0, 0)
 
     index_eaten = y*8 + x
-    eaten_pixel = sense.get_pixels()[index_eaten]
+    current_state = sense.get_pixels()
+    eaten_pixel = current_state[index_eaten]
     if eaten_pixel[1] != 0:
         length +=1
-        sense.set_pixel(randint(0, 7), randint(0, 7), 0, 255, 0) # new pixel to eat
-        # of course there's an interesting bug here: what if it's in our tail?
+
     elif eaten_pixel[0] != 0:
         fail_animation()
         restart()
         continue
     
     sense.set_pixel(x, y, 255, 0, 0)
+    a_wild_pixel_appears(sense.get_pixels())  # new pixel to eat
+    # This should prevent the bug where the pixel appears in our tail (or at our head).
 
     
     
