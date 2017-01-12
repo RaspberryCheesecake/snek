@@ -35,7 +35,7 @@ def fail_animation():
 def a_wild_pixel_appears(board_state):
     # we need to exclude pixel locations that are already occupied, in a general way...
 
-    if (0, 0, 0) in board_state:
+    if [0, 0, 0] in board_state:
         # To prevent a bug: otherwise if the whole board is already set this will run forever
         x_wild = randint(0, 7)
         y_wild = randint(0, 7)
